@@ -1,7 +1,9 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 import { DisableMinimize } from 'electron-disable-minimize';
 import main from './requests';
+
+const isDev = false;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -9,25 +11,29 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-const createWindow = (): void => {
+const createWindow = (): BrowserWindow => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     x: 810,
     y: 0,
     width: 300,
-    height: 100,
-    /* height: 180,
-    width: 300, */
-    transparent: true,
-    frame: false,
-    resizable: false,
-    type: `desktop`,
-    skipTaskbar: true,
+    height: 125,
+    /* height: 800,
+    width: 600, */
+    transparent: !isDev,
+    frame: isDev,
+    resizable: isDev,
+    /* type: `desktop`, */
+    skipTaskbar: !isDev,
     minimizable: true,
-    focusable: false,
+    focusable: isDev,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    }
   });
 
-  mainWindow.setIgnoreMouseEvents(true);
+  mainWindow.setIgnoreMouseEvents(!isDev);
   const handle = mainWindow.getNativeWindowHandle();
   // disable minimize perfectly!
   const isSuccess = DisableMinimize(handle);
@@ -36,15 +42,23 @@ const createWindow = (): void => {
   mainWindow.loadFile(path.join(__dirname, '../src/index.html'));
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
+
+  return mainWindow;
+
+  
 };
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', () => {
-  createWindow();
-  main();
+app.on('ready', async () => {
+  let win = createWindow();
+  const data = await main();
+
+  win.webContents.on('did-finish-load', () => {
+    win.webContents.send("message", data);
+  });
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

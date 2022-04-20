@@ -1,6 +1,6 @@
 "use strict";
-exports.__esModule = true;
-var ranks = ["Unrated", "Unknown 1", "Unknown 2",
+Object.defineProperty(exports, "__esModule", { value: true });
+const ranks = ["Unrated", "Unknown 1", "Unknown 2",
     "Iron 1", "Iron 2", "Iron 3",
     "Bronze 1", "Bronze 2", "Bronze 3",
     "Silver 1", "Silver 2", "Silver 3",
@@ -9,5 +9,5 @@ var ranks = ["Unrated", "Unknown 1", "Unknown 2",
     "Diamond 1", "Diamond 2", "Diamond 3",
     "Immortal 1", "Immortal 2", "Immortal 3",
     "Radiant"];
-exports["default"] = ranks;
+exports.default = ranks;
 //# sourceMappingURL=ranks.js.map

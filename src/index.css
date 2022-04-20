@@ -5,7 +5,7 @@ body {
     Arial, sans-serif;
   margin: auto;
   width: 300px;
-  height: 100px;
+  height: 125px;
   line-height: 0%;
   font-family: Inter;
 }
@@ -16,17 +16,30 @@ body {
   justify-content: center;
   align-items: center;
   width: 300px;
-  height: 100px;
+  height: 125px;
   /* background-color: rgba(199, 252, 255, 0.5); */
   /* background-color: rgba(248, 171, 248, 0.5); */
   border-radius: 20px;
   color: rgb(248, 171, 239);
 }
 
-.text {
-  padding-left: 2%;
+.info-container {
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-h1 {
+.text {
+  padding-left: 2%;
+  display: flex;
+}
 
+#rank {
+  margin-top: 10px;
+}
+
+#elo {
+  margin-top: 4px;
 }
