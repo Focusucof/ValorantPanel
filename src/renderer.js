@@ -9,7 +9,7 @@ ipcRenderer.on("message", (event, data) => {
     rank.innerHTML = data.rankInfo.rank;
 
     if(data.leaderboardPlace != "") {
-        rank.innerHTML += " (" + data.leaderboardPlace + ")";
+        rank.innerHTML += " #" + data.leaderboardPlace;
     }
 
     var elo = document.getElementById("elo");

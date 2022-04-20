@@ -32,9 +32,9 @@ async function main() {
         var user: any = "";
         user = await getUserFromID(userDetails.subject, userDetails.accessToken, userDetails.token);
         const rankInfo = await getRanks(userDetails.subject, pdRequest);
-        var leaderboardPlace = "";
+        var leaderboardPlace: any = "";
         if(rankInfo.rankID >= 21) {
-            leaderboardPlace = await getLeaderboardPlace(userDetails.subject, pdRequest, user.GameName);
+            leaderboardPlace = await getLeaderboardPlace(userDetails.subject, pdRequest, user[0].GameName);
         }
         
         var data = {
