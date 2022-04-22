@@ -5,27 +5,28 @@ import * as fs from 'fs';
 
 const clientVersion = "release-04.07-shipping-15-699063";
 
-async function main() {
+async function main(userDetails) {
 
     /**
      * If game is open refresh data else use cached data
      */
-    if(LocalRiotClient.gameOpen()) {
-        /* ======================= USER AUTH ======================== */
+    /* if(LocalRiotClient.gameOpen()) {
+        /* ======================= USER AUTH ======================== 
         var userDetails: any = {};
         const localRiotClient = LocalRiotClient.initFromLockFile();
         await localRiotClient.getCredentials().then((response: any) => {
+            console.log(response);
             userDetails = response.data;
-        });
+        }); */
         /* ========================================================== */
 
         const pdRequest: AxiosInstance = axios.create({
             baseURL: 'https://pd.na.a.pvp.net/',
             method: 'GET',
             headers: {
-                'X-Riot-Entitlements-JWT': userDetails.token,
+                'X-Riot-Entitlements-JWT': userDetails.Authorization,
                 'X-Riot-ClientPlatform': 'ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9',
-                'Authorization': 'Bearer ' + userDetails.accessToken,
+                'Authorization': 'Bearer ' + userDetails.entitlements,
                 'X-Riot-ClientVersion': clientVersion
             }
         });
@@ -46,9 +47,9 @@ async function main() {
         fs.writeFileSync('./data.json', JSON.stringify(data));
 
         return data;
-    } else { // return cached data
+    /* } else { // return cached data
         return JSON.parse(fs.readFileSync('./data.json').toString());
-    }
+    } */
 
 }
 

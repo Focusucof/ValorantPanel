@@ -2,7 +2,7 @@
   "compilerOptions": {
     "allowJs": true,
     "module": "commonjs",
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "sourceMap": true,
     "baseUrl": ".",
     "outDir": "dist",
@@ -11,7 +11,7 @@
     "paths": {
       "*": ["node_modules/*"]
     },
-    "target": "es6",
+    "target": "es2021",
   },
   "include": ["src/**/*"]
 }

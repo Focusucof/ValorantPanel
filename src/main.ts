@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 import { DisableMinimize } from 'electron-disable-minimize';
+import reauth from './login';
 import main from './requests';
 
 const isDev = false;
@@ -54,7 +55,8 @@ const createWindow = (): BrowserWindow => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
   let win = createWindow();
-  const data = await main();
+  const headers = await reauth();
+  const data = await main(headers);
 
   win.webContents.on('did-finish-load', () => {
     win.webContents.send("message", data);
