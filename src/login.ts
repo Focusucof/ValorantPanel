@@ -12,18 +12,29 @@ const clientVersion = "release-04.07-shipping-15-699063";
 
 async function reauth() {
     var cAuth64;
+    var puuid;
 
     for(let i = 0; i < data.Accounts.length; i++) {
         if(data.Accounts[i].Gamename == name) {
             cAuth64 = data.Accounts[i].cAuth64;
+            puuid = data.Accounts[i].puuid;
         }
     }
 
     const cookiesb64 = cAuth64.split(';a;');
-    const cookies = base64.decode(cookiesb64[2]);
+    var cookies;
+    for(let i = 0; i < cookiesb64.length; i++) {
+        if(base64.decode(cookiesb64[i]).includes('ssid=')) {
+            cookies = base64.decode(cookiesb64[i]);
+        }
+    }
 
     let a = await setupReauth(cookies);
-    console.log(a);
+    //console.log(a);
+    return {
+        userDetails: a,
+        puuid: puuid
+    }
 }
 
 const ciphers = [
@@ -69,7 +80,6 @@ const setupReauth = async (ssidCookie) => {
     ssidCookie = response.headers['set-cookie'].find(elem => /^ssid/.test(elem));
     tokens = { ...tokens, ...parseUrl(response.data.response.parameters.uri) };
     tokens.entitlementsToken = await fetchEntitlements(tokens.accessToken);
-    //console.log(tokens.entitlementsToken.data);
     return makeHeaders(tokens);
 }
 

@@ -5,7 +5,7 @@ import * as fs from 'fs';
 
 const clientVersion = "release-04.07-shipping-15-699063";
 
-async function main(userDetails) {
+async function main(userDetailsObject) {
 
     /**
      * If game is open refresh data else use cached data
@@ -20,22 +20,39 @@ async function main(userDetails) {
         }); */
         /* ========================================================== */
 
+        /* const assistSettings = process.env.APPDATA + '\\Assist\\Settings.json';
+        const file: any = fs.readFileSync(assistSettings);
+        const jfile = JSON.parse(file);
+        const name = fs.readFileSync('config', 'utf8').trim();
+
+        var puuid;
+        for(let i = 0; i < jfile.Accounts.length; i++) {
+            if(jfile.Accounts[i].Gamename == name) {
+                puuid = jfile.Accounts[i].puuid;
+            }
+        } */
+
+        const puuid = userDetailsObject.puuid;
+        const userDetails = userDetailsObject.userDetails;
+
+        console.log(puuid)
+
         const pdRequest: AxiosInstance = axios.create({
             baseURL: 'https://pd.na.a.pvp.net/',
             method: 'GET',
             headers: {
-                'X-Riot-Entitlements-JWT': userDetails.Authorization,
+                'X-Riot-Entitlements-JWT': userDetails.entitlements,
                 'X-Riot-ClientPlatform': 'ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9',
-                'Authorization': 'Bearer ' + userDetails.entitlements,
+                'Authorization': userDetails.Authorization,
                 'X-Riot-ClientVersion': clientVersion
             }
         });
         var user: any = "";
-        user = await getUserFromID(userDetails.subject, userDetails.accessToken, userDetails.token);
-        const rankInfo = await getRanks(userDetails.subject, pdRequest);
+        user = await getUserFromID(puuid, userDetails.Authorization, userDetails.entitlements);
+        const rankInfo = await getRanks(puuid, pdRequest);
         var leaderboardPlace: any = "";
         if(rankInfo.rankID >= 21) {
-            leaderboardPlace = await getLeaderboardPlace(userDetails.subject, pdRequest, user[0].GameName);
+            leaderboardPlace = await getLeaderboardPlace(puuid, pdRequest, user[0].GameName);
         }
         
         var data = {
@@ -57,11 +74,11 @@ async function getRanks(puuid: string, requestBase: AxiosInstance) {
     var rankID: number = 0;
     var rank;
     var elo;
-    var leaderboardPlace;
     await requestBase.get(`mmr/v1/players/${puuid}/competitiveupdates?startIndex=0&endIndex=1&queue=competitive`).then(response => {
         rankID = response.data.Matches[0].TierAfterUpdate;
         rank = ranks[rankID];
         elo = response.data.Matches[0].RankedRatingAfterUpdate;
+        console.log('a')
     });
     return {
         rank: rank,
@@ -77,6 +94,7 @@ async function getLeaderboardPlace(puuid: string, requestBase: AxiosInstance, ga
             if(response.data.Players[i].puuid == puuid) {
                 leaderboardPlace = response.data.Players[i].leaderboardRank;
             }
+            console.log('b')
         }
     });
     return leaderboardPlace;
@@ -94,6 +112,7 @@ async function getUserFromID(puuid: string, accessToken: string, entitlements: s
       
     await axios.request(options).then((response: any) => {
         data = response.data;
+        console.log('c')
     });
     
     return data;
