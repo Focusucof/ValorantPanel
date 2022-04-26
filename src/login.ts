@@ -3,7 +3,7 @@ import * as base64 from 'base-64';
 import axios from 'axios';
 import { Agent } from 'https';
 
-const assistSettings = process.env.APPDATA + '\\Assist\\Settings.json';
+const assistSettings = process.env.APPDATA + '\\Assist\\AssistSettings.json';
 const file: any = fs.readFileSync(assistSettings);
 const data = JSON.parse(file);
 const name = fs.readFileSync('config', 'utf8').trim();
@@ -14,10 +14,10 @@ async function reauth() {
     var cAuth64;
     var puuid;
 
-    for(let i = 0; i < data.Accounts.length; i++) {
-        if(data.Accounts[i].Gamename == name) {
-            cAuth64 = data.Accounts[i].cAuth64;
-            puuid = data.Accounts[i].puuid;
+    for(let i = 0; i < data.Profiles.length; i++) {
+        if(data.Profiles[i].Gamename == name) {
+            cAuth64 = data.Profiles[i].AssCAuth64;
+            puuid = data.Profiles[i].ProfileUuid;
         }
     }
 
